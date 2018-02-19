@@ -1,0 +1,28 @@
+﻿Imports System.Data.SqlClient
+Public Class Newdealer
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim name, phno, add As String
+        Dim cmd As New SqlCommand
+        name = TextBox1.Text
+        phno = TextBox2.Text
+        add = TextBox3.Text
+        If MessageBox.Show("Do you really want to add this Record?", "add", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = DialogResult.Yes Then
+
+            Dim connection As SqlConnection = New SqlConnection()
+            connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+            connection.Open()
+            cmd.Connection = connection
+            cmd.CommandText = "insert into Dealers (dname,phno,address) values('" & name & "','" & phno & "','" & add & "')"
+            'Dim adapter As New SqlClient.SqlDataAdapter("update Product set pquantity=pquantity + " & qty & "pprice=" & purrate & " pcategory='" & category & "' pdealer='" & dealer & "' unit='" & unit & "' sellingprice=" & sellprize & "minstock=" & minstoke & "tax=" & tax & "where pid=" & itemno, connection)
+            cmd.ExecuteNonQuery()
+            MsgBox("Inserted Successfully")
+        Else
+            MsgBox("Operation Cancelled")
+        End If
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Me.Close()
+
+    End Sub
+End Class

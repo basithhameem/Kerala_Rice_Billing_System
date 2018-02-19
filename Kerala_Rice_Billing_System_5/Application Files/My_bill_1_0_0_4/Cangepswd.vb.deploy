@@ -1,0 +1,45 @@
+﻿Imports System.Data.SqlClient
+Public Class Changepswd
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim uname As String
+        Dim pswd, newpswd, newpswd1 As String
+        Dim cmd As New SqlCommand
+        uname = TextBox1.Text
+        pswd = TextBox2.Text
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim adapter As New SqlClient.SqlDataAdapter("select * from login where Uname='" & uname & "' and Pswd='" & pswd & "'", connection)
+        Dim table As New DataTable()
+        adapter.Fill(table)
+        If table.Rows.Count > 0 Then
+            newpswd = TextBox3.Text
+            If (newpswd.Length < 4) Then
+                MsgBox("Please enter atleast 4 character")
+            Else
+
+                newpswd1 = TextBox4.Text
+                If String.Compare(newpswd, newpswd1) = 0 Then
+                    cmd.Connection = connection
+                    cmd.CommandText = "update login set Pswd='" & newpswd & "' where Uname='" & uname & "'"
+                    cmd.ExecuteNonQuery()
+                    MsgBox("Password changed Successfully")
+                    Me.Close()
+
+                Else
+                    MsgBox("Entered passwords does not match.. !!")
+                End If
+            End If
+        Else
+                MsgBox("Sorry invalid username or password !!!! :(")
+            TextBox1.Text = ""
+            TextBox2.Text = ""
+            TextBox3.Text = ""
+            TextBox4.Text = ""
+        End If
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Me.Close()
+    End Sub
+End Class

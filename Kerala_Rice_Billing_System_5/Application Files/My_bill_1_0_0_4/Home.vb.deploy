@@ -1,0 +1,53 @@
+﻿Public Class Home
+    Private Sub Form1_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
+        Dim result As Integer = MessageBox.Show("Do you really want to exit", "Attention !!!", MessageBoxButtons.YesNo)
+
+        If result = DialogResult.No Then
+            e.Cancel = True
+        End If
+
+    End Sub 'Form1_Closing
+
+
+    Private Sub Home_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
+    Private Sub ToolStripLabel1_Click(sender As Object, e As EventArgs) Handles ToolStripLabel1.Click
+        Billl.Show()
+    End Sub
+
+    Private Sub ToolStripLabel2_Click(sender As Object, e As EventArgs) Handles ToolStripLabel2.Click
+        Stock.Show()
+    End Sub
+
+    Private Sub ToolStripLabel3_Click(sender As Object, e As EventArgs) Handles ToolStripLabel3.Click
+        Salesret.Show()
+    End Sub
+
+    Private Sub ToolStripLabel4_Click(sender As Object, e As EventArgs) Handles ToolStripLabel4.Click
+        Expense.Show()
+    End Sub
+
+    Private Sub ToolStripLabel5_Click(sender As Object, e As EventArgs) Handles ToolStripLabel5.Click
+        Report.Show()
+    End Sub
+
+    Private Sub ToolStripLabel7_Click(sender As Object, e As EventArgs) Handles ToolStripLabel7.Click
+        Dim result As Integer = MessageBox.Show("Do you really want to exit", "Attention !!!", MessageBoxButtons.YesNo)
+        If result = DialogResult.No Then
+
+        ElseIf result = DialogResult.Yes Then
+            'Me.Close()
+            login.Close()
+        End If
+    End Sub
+
+    Private Sub LinkLabel1_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked
+        Changepswd.Show()
+    End Sub
+
+    Private Sub ToolStripLabel6_Click(sender As Object, e As EventArgs) Handles ToolStripLabel6.Click
+        about.Show()
+    End Sub
+End Class
