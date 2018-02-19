@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Kerala_Rice_Billing_System", "Kerala_Rice_Billing_System\Kerala_Rice_Billing_System.vdproj", "{DFFAF25C-8949-43C2-85F6-44A9AD040363}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFFAF25C-8949-43C2-85F6-44A9AD040363}.Debug|Default.ActiveCfg = Debug
+		{DFFAF25C-8949-43C2-85F6-44A9AD040363}.Debug|Default.Build.0 = Debug
+		{DFFAF25C-8949-43C2-85F6-44A9AD040363}.Release|Default.ActiveCfg = Release
+		{DFFAF25C-8949-43C2-85F6-44A9AD040363}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,228 @@
+﻿Imports System.Data.SqlClient
+Public Class Stock
+    Private Sub ProductBindingNavigatorSaveItem_Click(sender As Object, e As EventArgs)
+        Me.Validate()
+        Me.ProductBindingSource.EndEdit()
+        Me.TableAdapterManager.UpdateAll(Me.TestDataSet1)
+
+    End Sub
+
+    Private Sub vbnet_combobx_values_from_sql_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'TODO: This line of code loads data into the 'TestDataSet.Product' table. You can move, or remove it, as needed.
+        Me.ProductTableAdapter1.Fill(Me.TestDataSet.Product)
+        'TODO: This line of code loads data into the 'TestDataSet2.Dealers' table. You can move, or remove it, as needed.
+        'Me.DealersTableAdapter.Fill(Me.TestDataSet2.Dealers)
+
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim command As New SqlCommand("select * from Product", connection)
+        Dim adapter As New SqlDataAdapter(command)
+        Dim table As New DataTable()
+        adapter.Fill(table)
+        ComboBox6.DataSource = table
+        ComboBox6.DisplayMember = "Pname"
+        ComboBox6.ValueMember = "Pid"
+        Dim command1 As New SqlCommand("select * from Dealers", connection)
+        Dim adapter1 As New SqlDataAdapter(command1)
+        Dim table1 As New DataTable()
+        adapter1.Fill(table1)
+        ComboBox2.DataSource = table1
+        ComboBox2.DisplayMember = "dname"
+        ComboBox2.ValueMember = "Id"
+        Dim command2 As New SqlCommand("select * from Category", connection)
+        Dim adapter2 As New SqlDataAdapter(command2)
+        Dim table2 As New DataTable()
+        adapter2.Fill(table2)
+        ComboBox3.DataSource = table2
+        ComboBox3.DisplayMember = "cname"
+        ComboBox3.ValueMember = "Id"
+        Dim command3 As New SqlCommand("select * from Product", connection)
+        Dim adapter3 As New SqlDataAdapter(command3)
+        Dim table3 As New DataTable()
+        adapter3.Fill(table3)
+        ComboBox7.DataSource = table
+        ComboBox7.DisplayMember = "Pname"
+        ComboBox7.ValueMember = "Pid"
+        Dim command4 As New SqlCommand("select * from Unit", connection)
+        Dim adapter4 As New SqlDataAdapter(command4)
+        Dim table4 As New DataTable()
+        adapter4.Fill(table4)
+        ComboBox4.DataSource = table4
+        ComboBox4.DisplayMember = "Unit"
+        ComboBox4.ValueMember = "Id"
+        Dim item As String
+        item = DirectCast(ComboBox6.SelectedItem, DataRowView).Item("pname").ToString()
+        Dim adapter5 As New SqlClient.SqlDataAdapter("select * from Product where pname='" & item & "'", connection)
+
+        ' Dim As New SqlDataAdapter(command)
+
+        Dim table5 As New DataTable()
+        adapter5.Fill(table5)
+        If table5.Rows.Count > 0 Then
+            TextBox3.Text = table5.Rows(0).Item("pid")
+            Me.ComboBox3.SelectedIndex = ComboBox3.FindStringExact(table5.Rows(0).Item("pcategory"))
+            Me.ComboBox2.SelectedIndex = ComboBox2.FindStringExact(table5.Rows(0).Item("pdealer"))
+            TextBox4.Text = "0"
+            Me.ComboBox4.SelectedIndex = ComboBox4.FindStringExact(table5.Rows(0).Item("unit"))
+            TextBox5.Text = table5.Rows(0).Item("pprice")
+            TextBox10.Text = table5.Rows(0).Item("sellingprice")
+            TextBox7.Text = table5.Rows(0).Item("pquantity")
+            TextBox8.Text = table5.Rows(0).Item("minstock")
+            TextBox6.Text = table5.Rows(0).Item("tax")
+            ComboBox5.SelectedItem = "No"
+
+        End If
+    End Sub
+
+    Private Sub ComboBox6_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox6.SelectedIndexChanged
+        Dim item As String
+        item = DirectCast(ComboBox6.SelectedItem, DataRowView).Item("pname").ToString()
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim adapter As New SqlClient.SqlDataAdapter("select * from Product where pname='" & item & "'", connection)
+
+        ' Dim As New SqlDataAdapter(command)
+
+        Dim table As New DataTable()
+        adapter.Fill(table)
+        If table.Rows.Count > 0 Then
+            TextBox3.Text = table.Rows(0).Item("pid")
+            Me.ComboBox3.SelectedIndex = ComboBox3.FindStringExact(table.Rows(0).Item("pcategory"))
+            Me.ComboBox2.SelectedIndex = ComboBox2.FindStringExact(table.Rows(0).Item("pdealer"))
+            TextBox4.Text = "0"
+            Me.ComboBox4.SelectedIndex = ComboBox4.FindStringExact(table.Rows(0).Item("unit"))
+            TextBox5.Text = table.Rows(0).Item("pprice")
+            TextBox10.Text = table.Rows(0).Item("sellingprice")
+            TextBox7.Text = table.Rows(0).Item("pquantity")
+            TextBox8.Text = table.Rows(0).Item("minstock")
+            TextBox6.Text = table.Rows(0).Item("tax")
+            ComboBox5.SelectedItem = "No"
+
+        End If
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim item As String
+        Dim itemno As Integer
+        Dim category As String
+        Dim dealer As String = ""
+        Dim qty As Double
+        Dim unit As String
+        Dim cmd As New SqlCommand
+        Dim stk = New Stock
+        Dim purrate, sellprize, minstoke, tax As Double
+        itemno = Integer.Parse(TextBox3.Text)
+        item = DirectCast(ComboBox6.SelectedItem, DataRowView).Item("pname").ToString()
+        category = DirectCast(ComboBox3.SelectedItem, DataRowView).Item("cname").ToString()
+        If (DirectCast(ComboBox2.SelectedItem, DataRowView).Item("dname").ToString().Length <> 0) Then
+            dealer = DirectCast(ComboBox2.SelectedItem, DataRowView).Item("dname").ToString()
+
+        End If
+
+        qty = Double.Parse(TextBox4.Text)
+        unit = DirectCast(ComboBox4.SelectedItem, DataRowView).Item("Unit").ToString()
+        purrate = Double.Parse(TextBox5.Text)
+        sellprize = Double.Parse(TextBox10.Text)
+        minstoke = Double.Parse(TextBox8.Text)
+        tax = Double.Parse(TextBox6.Text)
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        cmd.Connection = connection
+        cmd.CommandText = "update Product set pquantity=pquantity + " & qty & ", pprice=" & purrate & ", pcategory='" & category & "', pdealer='" & dealer & "', unit='" & unit & "', sellingprice=" & sellprize & ",minstock=" & minstoke & ",tax=" & tax & " where pid=" & itemno
+        'Dim adapter As New SqlClient.SqlDataAdapter("update Product set pquantity=pquantity + " & qty & "pprice=" & purrate & " pcategory='" & category & "' pdealer='" & dealer & "' unit='" & unit & "' sellingprice=" & sellprize & "minstock=" & minstoke & "tax=" & tax & "where pid=" & itemno, connection)
+        cmd.ExecuteNonQuery()
+        MsgBox("Updated Successfully")
+        stk.Show()
+        Me.Close()
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+
+        Dim item As Integer
+        Dim cmd As New SqlCommand
+        Dim stk = New Stock
+        Dim connection As SqlConnection = New SqlConnection()
+        item = Integer.Parse(TextBox3.Text)
+        Try
+            If MessageBox.Show("Do you really want to Delete this Record?", "Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = DialogResult.Yes Then
+
+
+                connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+                connection.Open()
+                cmd.Connection = connection
+                'Dim adapter As New SqlClient.SqlDataAdapter("delete from Product where pid='" & item & "'", connection)
+                cmd.CommandText = "delete from Product where pid='" & item & "'"
+                cmd.ExecuteNonQuery()
+                MsgBox("Deleted Successfully")
+                stk.Show()
+                Me.Close()
+                Exit Sub
+            Else
+                MsgBox("Operation Cancelled")
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show("Error while deleting record on table...", "Delete Records")
+
+        Finally
+
+            connection.Close()
+        End Try
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Newstk.Show()
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        Me.Close()
+    End Sub
+
+    Private Sub GroupBox1_Enter(sender As Object, e As EventArgs) Handles GroupBox1.Enter
+
+    End Sub
+    Private Sub ProductDataGridView_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles ProductDataGridView.CellClick
+        Dim value As Object = ProductDataGridView.Rows(e.RowIndex).Cells(1).Value
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim adapter As New SqlClient.SqlDataAdapter("select * from Product where pname='" & value & "'", connection)
+        Dim table As New DataTable()
+        adapter.Fill(table)
+        If table.Rows.Count > 0 Then
+            TextBox3.Text = table.Rows(0).Item("pid")
+            Me.ComboBox6.SelectedIndex = ComboBox6.FindStringExact(table.Rows(0).Item("pname"))
+        End If
+    End Sub
+
+    Private Sub TextBox9_TextChanged(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) 
+
+    End Sub
+
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        purchaselist.Show()
+
+    End Sub
+
+    Private Sub ComboBox7_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox7.SelectedIndexChanged
+        Dim f As Integer
+        f = 0
+        For Each row In ProductDataGridView.Rows
+            If String.Compare(row.Cells(1).Value, DirectCast(ComboBox7.SelectedItem, DataRowView).Item("pname").ToString()) = 0 Then
+                ProductDataGridView.CurrentCell = row.Cells(1)
+                f = 1
+                Exit For
+            End If
+        Next
+        If (f = 0) Then
+            MsgBox("Selected item not found ..")
+        End If
+    End Sub
+End Class

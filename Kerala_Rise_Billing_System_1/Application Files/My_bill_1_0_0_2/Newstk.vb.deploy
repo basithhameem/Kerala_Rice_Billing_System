@@ -1,0 +1,164 @@
+﻿Imports System.Data.SqlClient
+Public Class Newstk
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim item As String
+        'Dim itemno As Integer
+        Dim category As String
+        Dim dealer As String
+        Dim qty As Double
+        Dim unit As String
+        Dim cmd As New SqlCommand
+        Dim stk = New Stock
+        Dim purrate, sellprize, minstoke, tax As Double
+        'itemno = Integer.Parse(TextBox3.Text)
+        item = TextBox9.Text
+        category = DirectCast(ComboBox3.SelectedItem, DataRowView).Item("cname").ToString()
+        dealer = DirectCast(ComboBox2.SelectedItem, DataRowView).Item("dname").ToString()
+        If (dealer = "Select") Then
+            dealer = "NULL"
+        End If
+        If (TextBox4.Text.Length = 0) Then
+            qty = Double.Parse(TextBox4.Text)
+        Else
+            MsgBox("Enter quantity.")
+        End If
+
+        unit = ComboBox4.SelectedItem
+        purrate = Double.Parse(TextBox5.Text)
+        sellprize = Double.Parse(TextBox10.Text)
+        minstoke = Double.Parse(TextBox8.Text)
+        tax = Double.Parse(TextBox6.Text)
+        If MessageBox.Show("Do you really want to Add this Record?", "Add", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = DialogResult.Yes Then
+
+            Dim connection As SqlConnection = New SqlConnection()
+            connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+            connection.Open()
+            cmd.Connection = connection
+            cmd.CommandText = "insert into Product (pname,pquantity,pprice,pcategory,pdealer,unit,sellingprice,minstock,tax) values('" & item & "'," & qty & "," & purrate & ",'" & category & "','" & dealer & "','" & unit & "'," & sellprize & "," & minstoke & "," & tax & ")"
+            'Dim adapter As New SqlClient.SqlDataAdapter("update Product set pquantity=pquantity + " & qty & "pprice=" & purrate & " pcategory='" & category & "' pdealer='" & dealer & "' unit='" & unit & "' sellingprice=" & sellprize & "minstock=" & minstoke & "tax=" & tax & "where pid=" & itemno, connection)
+            cmd.ExecuteNonQuery()
+            MsgBox("Inserted Successfully")
+
+            TextBox3.Text = ""
+            TextBox4.Text = ""
+            TextBox9.Text = ""
+            TextBox5.Text = ""
+            TextBox6.Text = ""
+            TextBox10.Text = ""
+            TextBox8.Text = ""
+
+
+        Else
+            MsgBox("Operation Cancelled")
+        End If
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim cat As String
+        Dim cmd As New SqlCommand
+        cat = InputBox("Category name:")
+        If MessageBox.Show("Do you really want to add this Record?", "add", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) = DialogResult.Yes Then
+
+            Dim connection As SqlConnection = New SqlConnection()
+            connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+            connection.Open()
+            cmd.Connection = connection
+            cmd.CommandText = "insert into Category (cname) values('" & cat & "')"
+            'Dim adapter As New SqlClient.SqlDataAdapter("update Product set pquantity=pquantity + " & qty & "pprice=" & purrate & " pcategory='" & category & "' pdealer='" & dealer & "' unit='" & unit & "' sellingprice=" & sellprize & "minstock=" & minstoke & "tax=" & tax & "where pid=" & itemno, connection)
+            cmd.ExecuteNonQuery()
+            MsgBox("Inserted Successfully")
+            Dim command As New SqlCommand("select * from Category", connection)
+            Dim adapter As New SqlDataAdapter(command)
+            Dim table As New DataTable()
+            adapter.Fill(table)
+            ComboBox3.DataSource = table
+            ComboBox3.DisplayMember = "cname"
+            ComboBox3.ValueMember = "Id"
+        Else
+            MsgBox("Operation Cancelled")
+        End If
+    End Sub
+    Private Sub vbnet_combobx_values_from_sql_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim command As New SqlCommand("select * from Category", connection)
+        Dim adapter As New SqlDataAdapter(command)
+        Dim table As New DataTable()
+        adapter.Fill(table)
+        ComboBox3.DataSource = table
+        ComboBox3.DisplayMember = "cname"
+        ComboBox3.ValueMember = "Id"
+        Dim command2 As New SqlCommand("select Id,dname from Dealers", connection)
+        Dim adapter2 As New SqlDataAdapter(command2)
+        Dim table2 As New DataTable()
+        adapter2.Fill(table2)
+        ComboBox2.DataSource = table2
+        ComboBox2.DisplayMember = "dname"
+        ComboBox2.ValueMember = "Id"
+        Dim command3 As New SqlCommand("select Id,Unit from Unit", connection)
+        Dim adapter3 As New SqlDataAdapter(command3)
+        Dim table3 As New DataTable()
+        adapter3.Fill(table3)
+        ComboBox4.DataSource = table3
+        ComboBox4.DisplayMember = "Unit"
+        ComboBox4.ValueMember = "Id"
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        Newdealer.Show()
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Me.Close()
+
+    End Sub
+
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        Dim unit As String
+        Dim cmd As New SqlCommand
+        unit = InputBox(" new unit")
+        If (unit.Length <> 0) Then
+            Dim connection As SqlConnection = New SqlConnection()
+            connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+            connection.Open()
+            cmd.Connection = connection
+            cmd.CommandText = "insert into Unit values('" & unit & "')"
+            'Dim adapter As New SqlClient.SqlDataAdapter("update Product set pquantity=pquantity + " & qty & "pprice=" & purrate & " pcategory='" & category & "' pdealer='" & dealer & "' unit='" & unit & "' sellingprice=" & sellprize & "minstock=" & minstoke & "tax=" & tax & "where pid=" & itemno, connection)
+            cmd.ExecuteNonQuery()
+            MsgBox("Inserted Successfully")
+        End If
+    End Sub
+
+    Private Sub ComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox2.SelectedIndexChanged
+
+    End Sub
+
+    Private Sub Button7_Click(sender As Object, e As EventArgs) Handles Button7.Click
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim command2 As New SqlCommand("select Id,dname from Dealers", connection)
+        Dim adapter2 As New SqlDataAdapter(command2)
+        Dim table2 As New DataTable()
+        adapter2.Fill(table2)
+        ComboBox2.DataSource = table2
+        ComboBox2.DisplayMember = "dname"
+        ComboBox2.ValueMember = "Id"
+        connection.Close()
+    End Sub
+
+    Private Sub Button8_Click(sender As Object, e As EventArgs) Handles Button8.Click
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim command2 As New SqlCommand("select Id,Unit from Unit", connection)
+        Dim adapter2 As New SqlDataAdapter(command2)
+        Dim table2 As New DataTable()
+        adapter2.Fill(table2)
+        ComboBox4.DataSource = table2
+        ComboBox4.DisplayMember = "Unit"
+        ComboBox4.ValueMember = "Id"
+        connection.Close()
+    End Sub
+End Class

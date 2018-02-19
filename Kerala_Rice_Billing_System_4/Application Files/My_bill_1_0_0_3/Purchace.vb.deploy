@@ -1,0 +1,89 @@
+﻿Imports System.Data.SqlClient
+Public Class Purchace
+    Dim txt1 As New TextBox
+    Dim combo2 As New ComboBox
+    Dim combo3 As New ComboBox
+    Dim txt4 As New TextBox
+    Dim txt5 As New TextBox
+    Dim txt6 As New TextBox
+    Dim txt7 As New TextBox
+    Dim txt8 As New TextBox
+    Dim row As Integer
+    Dim column As Integer
+    Private Sub vbnet_combobx_values_from_sql_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim command As New SqlCommand("select * from Product", connection)
+
+        Dim adapter As New SqlDataAdapter(command)
+
+        Dim table As New DataTable()
+
+        adapter.Fill(table)
+        combo2.DataSource = table
+        combo2.DisplayMember = "Pname"
+        combo2.ValueMember = "Pid"
+    End Sub
+
+
+    Public Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        TableLayoutPanel1.GrowStyle = TableLayoutPanelGrowStyle.AddRows
+        'TableLayoutPanel1.AutoSize = True
+        TableLayoutPanel1.AutoScroll = True
+        TableLayoutPanel1.Visible = True
+        Dim txt1 As New TextBox
+        Dim combo2 As New ComboBox
+        Dim combo3 As New ComboBox
+        Dim txt4 As New TextBox
+        Dim txt5 As New TextBox
+        Dim txt6 As New TextBox
+        Dim txt7 As New TextBox
+        Dim txt8 As New TextBox
+        'Dim totalAmt As Double
+        TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(SizeType.Absolute, 20))
+        'TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(SizeType.Absolute, 30))
+        'TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.AutoSize))
+        TableLayoutPanel1.RowCount += 1
+        TableLayoutPanel1.Controls.Add(txt1, 0, TableLayoutPanel1.RowCount - 1)
+        TableLayoutPanel1.Controls.Add(combo2, 1, TableLayoutPanel1.RowCount - 1)
+        TableLayoutPanel1.Controls.Add(combo3, 2, TableLayoutPanel1.RowCount - 1)
+        TableLayoutPanel1.Controls.Add(txt4, 3, TableLayoutPanel1.RowCount - 1)
+        TableLayoutPanel1.Controls.Add(txt5, 4, TableLayoutPanel1.RowCount - 1)
+        TableLayoutPanel1.Controls.Add(txt6, 5, TableLayoutPanel1.RowCount - 1)
+        TableLayoutPanel1.Controls.Add(txt7, 6, TableLayoutPanel1.RowCount - 1)
+        TableLayoutPanel1.Controls.Add(txt8, 7, TableLayoutPanel1.RowCount - 1)
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim command As New SqlCommand("select * from Product", connection)
+
+        Dim adapter As New SqlDataAdapter(command)
+
+        Dim table As New DataTable()
+
+        adapter.Fill(table)
+        combo2.DataSource = table
+        combo2.DisplayMember = "Pname"
+        combo2.ValueMember = "Pid"
+
+        'GlobalVariables.totalAmount += Double.Parse(TextBox9.Text)
+        'TextBox10.Text = GlobalVariables.totalAmount
+        'GlobalVariables.taxAmount += Double.Parse(TextBox11.Text)
+        'TextBox13.Text = GlobalVariables.taxAmount
+        'TextBox14.Text = GlobalVariables.totalAmount + (GlobalVariables.taxAmount / 100)
+
+    End Sub
+
+
+End Class
+Public Class ExTableLayoutPanel1
+    Inherits TableLayoutPanel
+
+    Public Sub New()
+        Me.SetStyle(ControlStyles.AllPaintingInWmPaint, True)
+        Me.SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
+    End Sub
+
+End Class

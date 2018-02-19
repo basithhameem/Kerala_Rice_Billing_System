@@ -1,0 +1,125 @@
+﻿Imports System.Data.SqlClient
+Public Class Salesret
+    Private Sub TextBox5_TextChanged(sender As Object, e As EventArgs) Handles TextBox5.TextChanged
+
+    End Sub
+
+    Private Sub Label4_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        TextBox1.Text = ""
+        TextBox3.Text = ""
+        TextBox5.Text = ""
+        TextBox6.Text = ""
+        TextBox7.Text = ""
+        TextBox8.Text = ""
+
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim billno As Integer
+        Dim pid As String
+
+        If (TextBox1.Text.Length = 0 Or String.IsNullOrEmpty(DirectCast(ComboBox1.SelectedItem, DataRowView).Item("Product").ToString())) Then
+            MsgBox("Please enter the details !!!")
+        Else
+            billno = Integer.Parse(TextBox1.Text)
+            pid = DirectCast(ComboBox1.SelectedItem, DataRowView).Item("Product").ToString()
+            Dim connection As SqlConnection = New SqlConnection()
+            connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+            connection.Open()
+            Dim adapter As New SqlClient.SqlDataAdapter("select * from Bill where Bill_no=" & billno & " and Product='" & pid & "'", connection)
+
+            ' Dim As New SqlDataAdapter(command)
+
+            Dim table As New DataTable()
+            adapter.Fill(table)
+            If table.Rows.Count > 0 Then
+                TextBox3.Text = table.Rows(0).Item("Product")
+
+                TextBox5.Text = table.Rows(0).Item("Amount")
+                TextBox6.Text = table.Rows(0).Item("quantity")
+            Else
+                MsgBox("Sorry. No records with given details !!! ")
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBox8_TextChanged(sender As Object, e As EventArgs) Handles TextBox8.TextChanged
+        Dim rqty, qty, amt As Integer
+        If (TextBox8.Text.Length <> 0) Then
+            rqty = Integer.Parse(TextBox8.Text)
+            amt = TextBox5.Text
+            qty = TextBox6.Text
+            If (rqty > qty) Then
+                MsgBox("Invalid quantity")
+            ElseIf (rqty <= qty)
+                TextBox7.Text = rqty * (amt / qty)
+            Else
+                TextBox7.Text = "0"
+            End If
+        End If
+
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Dim qty, total, billno As Integer
+        Dim pid As String
+        Dim cmd As New SqlCommand
+        qty = TextBox8.Text
+        total = TextBox7.Text
+        billno = TextBox1.Text
+        pid = DirectCast(ComboBox1.SelectedItem, DataRowView).Item("Product").ToString()
+
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        cmd.Connection = connection
+        cmd.CommandText = "update Bill set quantity=quantity - " & qty & ", Amount= Amount - " & total & " where Bill_no=" & billno & "and Product = '" & pid & "'"
+
+        cmd.ExecuteNonQuery()
+        cmd.CommandText = "update Product set pquantity=pquantity + " & qty & "where pname = '" & pid & "'"
+
+        cmd.ExecuteNonQuery()
+        MsgBox("Updated Successfully")
+
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        Me.Close()
+    End Sub
+
+    Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        SearchBill.Show()
+    End Sub
+
+    Private Sub Salesret_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
+    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
+
+    End Sub
+
+    Private Sub TextBox1_Leave(sender As Object, e As EventArgs) Handles TextBox1.Leave
+        Dim billno As Integer
+        billno = Integer.Parse(TextBox1.Text)
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim command2 As New SqlCommand("select Id,Product from Bill where Bill_no=" & billno, connection)
+        Dim adapter2 As New SqlDataAdapter(command2)
+        Dim table2 As New DataTable()
+        adapter2.Fill(table2)
+        If (table2.Rows.Count = 0) Then
+            MsgBox("Invalid Bill number...")
+        Else
+            ComboBox1.DataSource = table2
+            ComboBox1.DisplayMember = "Product"
+            ComboBox1.ValueMember = "Id"
+            connection.Close()
+        End If
+    End Sub
+End Class

@@ -1,0 +1,22 @@
+﻿Imports System.Data.SqlClient
+Public Class viewexpense
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim dte1, dte2 As String
+        dte1 = DateTimePicker1.Value.ToString()
+        dte2 = DateTimePicker2.Value.ToString()
+        Dim connection As SqlConnection = New SqlConnection()
+        connection.ConnectionString = "Server=(localdb)\MSSQLLocalDB;Initial Catalog=test;Integrated Security=True"
+        connection.Open()
+        Dim adapter As New SqlClient.SqlDataAdapter("select * from expense where date between '" & dte1 & "' and '" & dte2 & "'", connection)
+        Dim ds As New DataSet()
+        adapter.Fill(ds, "expense")
+        connection.Close()
+        DataGridView1.DataSource = ds
+        DataGridView1.DataMember = "expense"
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Me.Close()
+    End Sub
+End Class
